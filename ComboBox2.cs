@@ -45,6 +45,10 @@ namespace Controls
         // False until after the initial load cycle completes (prevents auto-open on form load)
         private bool _isReady;
 
+        // True briefly after the control becomes visible again (e.g. tab switch back);
+        // suppresses the auto-open that WPF's focus restoration would trigger.
+        private bool _suppressNextAutoOpen;
+
 
         public ComboBox2()
         {
@@ -53,6 +57,19 @@ namespace Controls
             StaysOpenOnEdit = true;
 
             ItemsPanel = new ItemsPanelTemplate(new FrameworkElementFactory(typeof(VirtualizingStackPanel)));
+
+            IsEnabledChanged += (s, ev) => UpdateClearButtonVisibility();
+
+            IsVisibleChanged += (s, ev) =>
+            {
+                if ((bool)ev.NewValue)
+                {
+                    // Control just became visible (e.g. tab switch back).
+                    // Suppress the auto-open that WPF's focus restoration would trigger.
+                    _suppressNextAutoOpen = true;
+                    Dispatcher.BeginInvoke(new Action(() => _suppressNextAutoOpen = false), DispatcherPriority.Input);
+                }
+            };
 
             Loaded += (s, ev) =>
             {
@@ -100,8 +117,13 @@ namespace Controls
             // Only react when the ComboBox itself gains focus (not internal TextBox re-focus)
             if (e.NewFocus == _textBox && e.OldFocus != _textBox)
             {
-                // Skip auto-open during initial form load auto-focus
+                // Skip auto-open during initial form load or tab-switch focus restoration
                 if (!_isReady) return;
+                if (_suppressNextAutoOpen)
+                {
+                    _suppressNextAutoOpen = false;
+                    return;
+                }
 
                 _lastValidSelectedItem = SelectedItem;
 
@@ -268,7 +290,11 @@ namespace Controls
         {
             if (_suppressSelectionChanged) return;
 
+            // Suppress TextChanged during the base call — WPF updates the TextBox
+            // to reflect the new selection, which would otherwise trigger filtering.
+            _suppressTextChanged = true;
             base.OnSelectionChanged(e);
+            _suppressTextChanged = false;
 
             if (_isFiltering && !_isKeyboardNavigating && SelectedItem != null)
             {
@@ -399,7 +425,7 @@ namespace Controls
         private void UpdateClearButtonVisibility()
         {
             if (_clearButton == null) return;
-            _clearButton.Visibility = SelectedItem != null ? Visibility.Visible : Visibility.Collapsed;
+            _clearButton.Visibility = SelectedItem != null && IsEnabled ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void SwapItemsSource(IEnumerable source)

@@ -88,6 +88,41 @@ namespace ComboBox2.Tests
         #endregion
 
 
+        #region First selection (no prior SelectedItem)
+
+        [TestMethod]
+        public void DropDownClosed_WithNoPriorSelection_PreservesNewSelection()
+        {
+            // Reproduces: user opens dropdown, clicks an item when nothing was selected before.
+            // WPF updates TextBox after selection, which must NOT trigger filtering/cancel.
+            RunOnSTA(() =>
+            {
+                var items = new List<string> { "Apple", "Banana", "Cherry" };
+                var combo = CreateTestCombo(items);
+                SetField(combo, "_lastValidSelectedItem", null);
+
+                // Simulate: user clicks "Banana" → WPF sets SelectedItem
+                combo.SelectedItem = "Banana";
+
+                // OnSelectionChanged should have suppressed TextChanged during base call,
+                // so _isFiltering must still be false.
+                bool isFiltering = GetField<bool>(combo, "_isFiltering");
+                Assert.IsFalse(isFiltering,
+                    "_isFiltering should remain false after selection-driven text update");
+
+                // Now simulate dropdown closing
+                // _isFiltering is false → CancelEditing should NOT be called
+                // → SelectedItem should remain "Banana"
+                InvokeMethod(combo, "OnDropDownClosed", EventArgs.Empty);
+
+                Assert.AreEqual("Banana", combo.SelectedItem,
+                    "SelectedItem should be preserved after dropdown closes");
+            });
+        }
+
+        #endregion
+
+
         #region CommitSelection — SelectedItem preserved
 
         [TestMethod]
