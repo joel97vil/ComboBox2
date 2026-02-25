@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Controls</RootNamespace>
     <AssemblyName>ComboBox2</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
