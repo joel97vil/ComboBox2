@@ -299,6 +299,12 @@ namespace Controls
             // Show the display text for the confirmed item
             string displayText = GetItemDisplayText(_lastValidSelectedItem);
             RestoreOriginalItems();
+
+            // Re-assign SelectedItem after the ItemsSource swap (WPF clears it during swap)
+            _suppressSelectionChanged = true;
+            SelectedItem = _lastValidSelectedItem;
+            _suppressSelectionChanged = false;
+
             SetTextSuppressed(displayText);
 
             _currentFilterText = "";
