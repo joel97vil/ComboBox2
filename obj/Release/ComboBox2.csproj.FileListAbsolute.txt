@@ -1,0 +1,6 @@
+Z:\Usuarios\Usuario\Documentos\GitHub\ComboBox2\bin\Release\ComboBox2.dll
+Z:\Usuarios\Usuario\Documentos\GitHub\ComboBox2\bin\Release\ComboBox2.pdb
+Z:\Usuarios\Usuario\Documentos\GitHub\ComboBox2\obj\Release\ComboBox2.csproj.AssemblyReference.cache
+Z:\Usuarios\Usuario\Documentos\GitHub\ComboBox2\obj\Release\ComboBox2.csproj.CoreCompileInputs.cache
+Z:\Usuarios\Usuario\Documentos\GitHub\ComboBox2\obj\Release\ComboBox2.dll
+Z:\Usuarios\Usuario\Documentos\GitHub\ComboBox2\obj\Release\ComboBox2.pdb

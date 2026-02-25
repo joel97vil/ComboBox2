@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"Z:/Usuarios/Usuario/Documentos/GitHub/ComboBox2\" && dotnet build --nologo 2>&1)",
+      "Bash(dotnet:*)",
+      "Bash(cd \"Z:/Usuarios/Usuario/Documentos/GitHub/ComboBox2\" && \"/c/Windows/Microsoft.NET/Framework64/v4.0.30319/MSBuild.exe\" ComboBox2.csproj /p:Configuration=Release /verbosity:minimal 2>&1)",
+      "Bash(cd \"Z:/Usuarios/Usuario/Documentos/GitHub/ComboBox2\" && \"/c/Windows/Microsoft.NET/Framework64/v4.0.30319/MSBuild.exe\" ComboBox2.csproj //p:Configuration=Release //verbosity:minimal 2>&1)",
+      "Bash(cd \"Z:/Usuarios/Usuario/Documentos/GitHub/ComboBox2\" && \"C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/MSBuild.exe\" ComboBox2.csproj //p:Configuration=Release //verbosity:minimal 2>&1)"
+    ]
+  }
+}
