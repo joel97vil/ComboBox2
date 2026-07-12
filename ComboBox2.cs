@@ -190,6 +190,17 @@ namespace Controls
                     }).ToList();
 
                 SwapItemsSource(filtered);
+
+                // Single result: pre-highlight it so Enter/Tab commits without pressing Down.
+                // Suppressed so it doesn't auto-commit or overwrite the filter text.
+                if (filtered.Count == 1)
+                {
+                    _suppressSelectionChanged = true;
+                    _suppressTextChanged = true;
+                    SelectedIndex = 0;
+                    _suppressTextChanged = false;
+                    _suppressSelectionChanged = false;
+                }
             }
 
             // Restore the user's text and caret position after ItemsSource swap

@@ -6,7 +6,25 @@
       "Bash(cd \"Z:/Usuarios/Usuario/Documentos/GitHub/ComboBox2\" && \"/c/Windows/Microsoft.NET/Framework64/v4.0.30319/MSBuild.exe\" ComboBox2.csproj /p:Configuration=Release /verbosity:minimal 2>&1)",
       "Bash(cd \"Z:/Usuarios/Usuario/Documentos/GitHub/ComboBox2\" && \"/c/Windows/Microsoft.NET/Framework64/v4.0.30319/MSBuild.exe\" ComboBox2.csproj //p:Configuration=Release //verbosity:minimal 2>&1)",
       "Bash(cd \"Z:/Usuarios/Usuario/Documentos/GitHub/ComboBox2\" && \"C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/MSBuild.exe\" ComboBox2.csproj //p:Configuration=Release //verbosity:minimal 2>&1)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "PowerShell(git rm *)",
+      "PowerShell(dotnet build *)",
+      "PowerShell(& \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" ComboBox2.csproj /t:Restore,Build /p:Configuration=Release /v:minimal /nologo)",
+      "Bash(git -C /c/Users/Joel/Desktop/Projectes/ComboBox2 status --short)",
+      "Bash(git -C /c/Users/Joel/Desktop/Projectes/ComboBox2 ls-files)",
+      "Bash(echo \"exit: $?\")",
+      "PowerShell(Get-ChildItem 'HKLM:\\\\SOFTWARE\\\\Microsoft\\\\NET Framework Setup\\\\NDP' | ForEach-Object { $_.Name }; Get-ItemProperty 'HKLM:\\\\SOFTWARE\\\\Microsoft\\\\NET Framework Setup\\\\NDP\\\\v4\\\\Full' | Select-Object Version, Release, InstallPath | Format-List)",
+      "PowerShell(& \"${env:ProgramFiles\\(x86\\)}\\\\Microsoft Visual Studio\\\\Installer\\\\vswhere.exe\" -all -format json | ConvertFrom-Json | ForEach-Object { '{0} | {1} | {2}' -f $_.displayName, $_.installationVersion, $_.installationPath })",
+      "PowerShell(Get-ChildItem 'HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Uninstall', 'HKLM:\\\\SOFTWARE\\\\WOW6432Node\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Uninstall' | ForEach-Object { $n = $_.GetValue\\('DisplayName'\\); if \\($n -match 'Targeting|Developer Pack|SDK'\\) { '{0} | {1}' -f $n, $_.PSChildName } } | Sort-Object)",
+      "PowerShell(Get-ChildItem *)",
+      "PowerShell(Test-Path *)",
+      "PowerShell($base = \"${env:ProgramFiles\\(x86\\)}\\\\Reference Assemblies\\\\Microsoft\\\\Framework\\\\.NETFramework\"; foreach \\($v in 'v4.5','v4.6','v4.6.1'\\) { $s = \\(Get-ChildItem \"$base\\\\$v\" -Recurse -File | Measure-Object Length -Sum\\); '{0}: {1} files, {2:N1} MB' -f $v, $s.Count, \\($s.Sum/1MB\\) })",
+      "PowerShell(& 'C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe' ComboBox2.Tests\\\\ComboBox2.Tests.csproj /p:Configuration=Debug /v:m /nologo)",
+      "PowerShell(dotnet msbuild *)",
+      "PowerShell(winget install *)",
+      "PowerShell(dotnet restore ComboBox2.csproj; dotnet msbuild ComboBox2.Tests\\\\ComboBox2.Tests.csproj /p:Configuration=Debug /v:m /nologo /restore)",
+      "PowerShell(& 'C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\Common7\\\\IDE\\\\CommonExtensions\\\\Microsoft\\\\TestWindow\\\\vstest.console.exe' ComboBox2.Tests\\\\bin\\\\Debug\\\\ComboBox2.Tests.dll /logger:console;verbosity=minimal)",
+      "PowerShell(dotnet vstest *)"
     ]
   }
 }

@@ -1,0 +1,52 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\Joel\\Desktop\\Projectes\\ComboBox2\\ComboBox2.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\Joel\\Desktop\\Projectes\\ComboBox2\\ComboBox2.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Joel\\Desktop\\Projectes\\ComboBox2\\ComboBox2.csproj",
+        "projectName": "ComboBox2",
+        "projectPath": "C:\\Users\\Joel\\Desktop\\Projectes\\ComboBox2\\ComboBox2.csproj",
+        "packagesPath": "C:\\Users\\Joel\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Joel\\Desktop\\Projectes\\ComboBox2\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Joel\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net48"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net48": {
+            "targetAlias": "net48",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net48": {
+          "targetAlias": "net48",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.422\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

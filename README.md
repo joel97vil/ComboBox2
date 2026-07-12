@@ -13,21 +13,13 @@ A WPF custom ComboBox control with built-in type-to-filter, auto-open dropdown, 
 
 ## .NET Framework Compatibility
 
-ComboBox2 multi-targets two .NET Framework versions:
+ComboBox2 targets **.NET Framework 4.8** (`net48`, VS 2019+), the latest .NET Framework release with long-term Windows support. Your project must target .NET Framework 4.8 or later.
 
-| Target | TFM | Minimum Visual Studio | Notes |
-|---|---|---|---|
-| **.NET Framework 4.5.1** | `net451` | VS 2013+ | Broadest compatibility. Suitable for legacy projects that cannot upgrade. |
-| **.NET Framework 4.8** | `net48` | VS 2019+ | Recommended for new projects. Latest .NET Framework release with long-term Windows support. |
-
-Both targets produce a `ComboBox2.dll` in their respective output folders:
+The build produces:
 
 ```
-bin\Release\net451\ComboBox2.dll
 bin\Release\net48\ComboBox2.dll
 ```
-
-> **Which one should I use?** If your project targets .NET Framework 4.5.1–4.7.2, reference the `net451` build. If your project targets .NET Framework 4.8 or later, reference the `net48` build. When added as a project reference, MSBuild picks the correct one automatically.
 
 > **Note:** ComboBox2 targets .NET Framework only. It is not compatible with .NET Core, .NET 5+, or .NET 6+ (which use a different WPF SDK).
 
@@ -41,7 +33,7 @@ Copy `ComboBox2.cs` into your WPF project. Make sure your project references the
 
 1. Build the ComboBox2 project (`dotnet build -c Release`).
 2. In your WPF project, right-click **References** → **Add Reference** → **Browse**.
-3. Navigate to the appropriate `bin\Release\<tfm>\ComboBox2.dll` for your target framework.
+3. Navigate to `bin\Release\net48\ComboBox2.dll`.
 
 ### 3. Add as a project reference (same solution)
 

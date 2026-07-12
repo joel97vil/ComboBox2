@@ -335,6 +335,260 @@ namespace ComboBox2.Tests
         #endregion
 
 
+        #region Clear button visibility on programmatic selection
+
+        /// <summary>
+        /// Pumps the dispatcher so queued BeginInvoke callbacks (e.g. _isReady) run.
+        /// </summary>
+        private static void DoEvents()
+        {
+            var frame = new System.Windows.Threading.DispatcherFrame();
+            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.Background,
+                new Action(() => frame.Continue = false));
+            System.Windows.Threading.Dispatcher.PushFrame(frame);
+        }
+
+        [TestMethod]
+        public void ClearButton_VisibleOnLoad_WhenSelectionSetInCodeBehind()
+        {
+            RunOnSTA(() =>
+            {
+                var items = new List<string> { "Apple", "Banana", "Cherry" };
+                var combo = new Controls.ComboBox2();
+                combo.ItemsSource = items;
+
+                // Back code sets selection BEFORE the control is loaded/templated
+                combo.SelectedItem = "Banana";
+
+                var window = new System.Windows.Window
+                {
+                    Content = combo,
+                    Width = 200,
+                    Height = 100,
+                    Left = -10000,
+                    Top = -10000,
+                    ShowInTaskbar = false,
+                    ShowActivated = false,
+                    WindowStyle = System.Windows.WindowStyle.None
+                };
+
+                try
+                {
+                    window.Show(); // applies template, raises Loaded
+                    DoEvents();
+
+                    var clearButton = GetField<Button>(combo, "_clearButton");
+                    Assert.IsNotNull(clearButton, "Clear button should be created on template apply");
+                    Assert.AreEqual(System.Windows.Visibility.Visible, clearButton.Visibility,
+                        "Clear button should be visible when selection was set in code-behind");
+                }
+                finally
+                {
+                    window.Close();
+                }
+            });
+        }
+
+        private static void AssertClearButtonVisibleAfterLoad(Action<Controls.ComboBox2> setupBeforeShow,
+            Action<Controls.ComboBox2> setupAfterShow = null)
+        {
+            RunOnSTA(() =>
+            {
+                var combo = new Controls.ComboBox2();
+                setupBeforeShow(combo);
+
+                var window = new System.Windows.Window
+                {
+                    Content = combo,
+                    Width = 200,
+                    Height = 100,
+                    Left = -10000,
+                    Top = -10000,
+                    ShowInTaskbar = false,
+                    ShowActivated = false,
+                    WindowStyle = System.Windows.WindowStyle.None
+                };
+
+                try
+                {
+                    window.Show();
+                    DoEvents();
+                    if (setupAfterShow != null)
+                    {
+                        setupAfterShow(combo);
+                        DoEvents();
+                    }
+
+                    Assert.IsNotNull(combo.SelectedItem, "Precondition: selection should have resolved");
+                    var clearButton = GetField<Button>(combo, "_clearButton");
+                    Assert.IsNotNull(clearButton, "Clear button should be created on template apply");
+                    Assert.AreEqual(System.Windows.Visibility.Visible, clearButton.Visibility,
+                        "Clear button should be visible for programmatic selection");
+                }
+                finally
+                {
+                    window.Close();
+                }
+            });
+        }
+
+        [TestMethod]
+        public void ClearButton_VisibleOnLoad_SelectedValueWithPaths()
+        {
+            var items = new List<TestItem>
+            {
+                new TestItem { Id = 1, Name = "Alpha" },
+                new TestItem { Id = 2, Name = "Beta" }
+            };
+            AssertClearButtonVisibleAfterLoad(combo =>
+            {
+                combo.DisplayMemberPath = "Name";
+                combo.SelectedValuePath = "Id";
+                combo.ItemsSource = items;
+                combo.SelectedValue = 2;
+            });
+        }
+
+        [TestMethod]
+        public void ClearButton_VisibleOnLoad_SelectedValueBeforeItemsSource()
+        {
+            var items = new List<TestItem>
+            {
+                new TestItem { Id = 1, Name = "Alpha" },
+                new TestItem { Id = 2, Name = "Beta" }
+            };
+            AssertClearButtonVisibleAfterLoad(combo =>
+            {
+                combo.DisplayMemberPath = "Name";
+                combo.SelectedValuePath = "Id";
+                combo.SelectedValue = 2;
+                combo.ItemsSource = items;
+            });
+        }
+
+        [TestMethod]
+        public void ClearButton_VisibleAfterTabShown_WhenSelectionSetWhileTabHidden()
+        {
+            RunOnSTA(() =>
+            {
+                var items = new List<string> { "Apple", "Banana", "Cherry" };
+                var combo = new Controls.ComboBox2();
+                combo.ItemsSource = items;
+
+                var tabs = new TabControl();
+                tabs.Items.Add(new TabItem { Header = "First", Content = new TextBlock() });
+                tabs.Items.Add(new TabItem { Header = "Second", Content = combo });
+                tabs.SelectedIndex = 0;
+
+                var window = new System.Windows.Window
+                {
+                    Content = tabs,
+                    Width = 300,
+                    Height = 200,
+                    Left = -10000,
+                    Top = -10000,
+                    ShowInTaskbar = false,
+                    ShowActivated = false,
+                    WindowStyle = System.Windows.WindowStyle.None
+                };
+
+                try
+                {
+                    window.Show();
+                    DoEvents();
+
+                    // Back code sets selection while the combo's tab was never shown
+                    combo.SelectedItem = "Banana";
+                    DoEvents();
+
+                    // User switches to the tab containing the combo
+                    tabs.SelectedIndex = 1;
+                    DoEvents();
+
+                    var clearButton = GetField<Button>(combo, "_clearButton");
+                    Assert.IsNotNull(clearButton, "Clear button should be created once the tab is shown");
+                    Assert.AreEqual(System.Windows.Visibility.Visible, clearButton.Visibility,
+                        "Clear button should be visible: selection was set while the tab was hidden");
+                }
+                finally
+                {
+                    window.Close();
+                }
+            });
+        }
+
+        [TestMethod]
+        public void ClearButton_Visible_SelectionSetAfterLoad()
+        {
+            var items = new List<TestItem>
+            {
+                new TestItem { Id = 1, Name = "Alpha" },
+                new TestItem { Id = 2, Name = "Beta" }
+            };
+            AssertClearButtonVisibleAfterLoad(
+                combo =>
+                {
+                    combo.DisplayMemberPath = "Name";
+                    combo.SelectedValuePath = "Id";
+                },
+                combo =>
+                {
+                    combo.ItemsSource = items;
+                    combo.SelectedValue = 2;
+                });
+        }
+
+        #endregion
+
+
+        #region Auto-highlight single filtered result
+
+        [TestMethod]
+        public void Filtering_SingleResult_AutoHighlightsItem()
+        {
+            RunOnSTA(() =>
+            {
+                var items = new List<string> { "Apple", "Banana", "Cherry" };
+                var combo = CreateTestCombo(items);
+                combo.IsDropDownOpen = true;
+
+                var textBox = GetField<TextBox>(combo, "_textBox");
+                textBox.Text = "ban";
+                InvokeMethod(combo, "TextBox_TextChanged", textBox,
+                    new TextChangedEventArgs(TextBox.TextChangedEvent, UndoAction.None));
+
+                Assert.AreEqual("Banana", combo.SelectedItem,
+                    "Single filtered result should be auto-highlighted");
+                Assert.AreEqual("ban", textBox.Text,
+                    "Filter text should be preserved after auto-highlight");
+            });
+        }
+
+        [TestMethod]
+        public void Filtering_MultipleResults_NoAutoHighlight()
+        {
+            RunOnSTA(() =>
+            {
+                var items = new List<string> { "Apple", "Banana", "Cherry" };
+                var combo = CreateTestCombo(items);
+                combo.IsDropDownOpen = true;
+
+                var textBox = GetField<TextBox>(combo, "_textBox");
+                textBox.Text = "a";
+                InvokeMethod(combo, "TextBox_TextChanged", textBox,
+                    new TextChangedEventArgs(TextBox.TextChangedEvent, UndoAction.None));
+
+                Assert.AreEqual(2, combo.Items.Count,
+                    "Filter 'a' should match Apple and Banana");
+                Assert.IsNull(combo.SelectedItem,
+                    "No auto-highlight when filter yields multiple results");
+            });
+        }
+
+        #endregion
+
+
         #region Utility methods
 
         [TestMethod]
