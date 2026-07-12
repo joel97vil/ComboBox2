@@ -519,6 +519,27 @@ namespace ComboBox2.Tests
         }
 
         [TestMethod]
+        public void ClearButton_Updates_EvenWhenSelectionChangeSuppressed()
+        {
+            RunOnSTA(() =>
+            {
+                var items = new List<string> { "Apple", "Banana", "Cherry" };
+                var combo = CreateTestCombo(items);
+                var clearButton = new Button { Visibility = System.Windows.Visibility.Collapsed };
+                SetField(combo, "_clearButton", clearButton);
+
+                // Selection changes while OnSelectionChanged is suppressed —
+                // visibility must still follow SelectedItem.
+                SetField(combo, "_suppressSelectionChanged", true);
+                combo.SelectedItem = "Banana";
+                SetField(combo, "_suppressSelectionChanged", false);
+
+                Assert.AreEqual(System.Windows.Visibility.Visible, clearButton.Visibility,
+                    "Clear button must reflect SelectedItem even for suppressed selection changes");
+            });
+        }
+
+        [TestMethod]
         public void ClearButton_Visible_SelectionSetAfterLoad()
         {
             var items = new List<TestItem>

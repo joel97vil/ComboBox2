@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ComboBox2")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+01539e35c9349564e27339539778fa462f8f20ed")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ad25b3d4398cb5aa624477a025cf77b313800630")]
 [assembly: System.Reflection.AssemblyProductAttribute("ComboBox2")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ComboBox2")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

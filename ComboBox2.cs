@@ -60,6 +60,13 @@ namespace Controls
 
             IsEnabledChanged += (s, ev) => UpdateClearButtonVisibility();
 
+            // Watch SelectedItem directly so the clear button follows every change,
+            // including programmatic sets and changes made while OnSelectionChanged
+            // is suppressed (internal swaps) or before the template is applied.
+            System.ComponentModel.DependencyPropertyDescriptor
+                .FromProperty(SelectedItemProperty, typeof(ComboBox2))
+                .AddValueChanged(this, (s, ev) => UpdateClearButtonVisibility());
+
             IsVisibleChanged += (s, ev) =>
             {
                 if ((bool)ev.NewValue)
