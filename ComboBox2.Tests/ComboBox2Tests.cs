@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Interop;
 using Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -604,6 +607,50 @@ namespace ComboBox2.Tests
                     "Filter 'a' should match Apple and Banana");
                 Assert.IsNull(combo.SelectedItem,
                     "No auto-highlight when filter yields multiple results");
+            });
+        }
+
+        #endregion
+
+
+        #region Enter key — commits single filtered result
+
+        [TestMethod]
+        public void EnterKey_WithSingleFilteredResult_CommitsSelection()
+        {
+            RunOnSTA(() =>
+            {
+                var items = new List<string> { "Apple", "Banana", "Cherry" };
+                var combo = CreateTestCombo(items);
+                combo.IsDropDownOpen = true;
+
+                var textBox = GetField<TextBox>(combo, "_textBox");
+                textBox.Text = "ban";
+                InvokeMethod(combo, "TextBox_TextChanged", textBox,
+                    new TextChangedEventArgs(TextBox.TextChangedEvent, UndoAction.None));
+
+                var hwndSource = new HwndSource(new HwndSourceParameters("ComboBox2TestSource"));
+                try
+                {
+                    var keyArgs = new KeyEventArgs(Keyboard.PrimaryDevice, hwndSource, 0, Key.Enter)
+                    {
+                        RoutedEvent = Keyboard.PreviewKeyDownEvent
+                    };
+                    InvokeMethod(combo, "OnPreviewKeyDown", keyArgs);
+
+                    Assert.AreEqual("Banana", combo.SelectedItem,
+                        "Enter should commit the sole filtered result");
+                    Assert.AreEqual("Banana", textBox.Text,
+                        "Text should show the committed item's display text");
+                    Assert.IsFalse(combo.IsDropDownOpen,
+                        "Enter should close the dropdown");
+                    Assert.IsTrue(keyArgs.Handled,
+                        "Enter key should be marked handled");
+                }
+                finally
+                {
+                    hwndSource.Dispose();
+                }
             });
         }
 
